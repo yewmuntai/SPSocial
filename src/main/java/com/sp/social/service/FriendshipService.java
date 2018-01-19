@@ -32,4 +32,20 @@ public class FriendshipService {
 		}
 		return new ArrayList<>();
 	}
+	
+	public List<Friendship> findCommonFriends(String email1, String email2) {
+		if (email1 != null && email1.length() > 0) {
+			Optional<Person> personOp1 = personRepository.findByEmail(email1);
+			if (personOp1.isPresent()) {
+				if (email2 != null && email2.length() > 0) {
+					Optional<Person> personOp2 = personRepository.findByEmail(email2);
+					if (personOp2.isPresent()) {
+						return friendshipRepository.findCommonFriends(personOp1.get(), personOp2.get());
+					}
+				}
+				return new ArrayList<>();
+			}
+		}
+		return new ArrayList<>();
+	}
 }
