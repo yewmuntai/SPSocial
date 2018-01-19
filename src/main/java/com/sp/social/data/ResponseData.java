@@ -9,4 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ResponseData {
 	private boolean success;
+	private String message;
+	
+	public ResponseData(boolean success) {
+		this.success = success;
+	}
 }

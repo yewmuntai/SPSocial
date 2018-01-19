@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.sp.social.exception.SPSocialException;
 import com.sp.social.model.Friendship;
 import com.sp.social.model.Person;
 import com.sp.social.repository.FriendshipRepository;
@@ -20,9 +21,32 @@ public class PersonService {
 	
 	public Person create(String email) {
 		Person person = new Person();
+		
+		if (!simpleEmailCheck(email)) {
+			throw new SPSocialException();
+		}
+		
 		person.setEmail(email);
 		
 		return personRepository.save(person);
+	}
+	
+	private boolean simpleEmailCheck(String email) {
+		if (email == null || email.length() == 0) {
+			return false;
+		}
+		
+		int idx1 = email.indexOf('@');
+		if (idx1 < 1) {
+			return false;
+		}
+		
+		int idx2 = email.indexOf('.', idx1);
+		if (idx2 - idx1 < 2 || idx2+1 >= email.length()) {
+			return false;
+		}
+		
+		return true;
 	}
 	
 	public Person getPerson(String email) {
