@@ -1,0 +1,12 @@
+package com.sp.social.data;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class ResponseData {
+	private boolean success;
+}
