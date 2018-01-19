@@ -46,12 +46,18 @@ public class PersonService {
 		Person person1 = getPerson(email1);
 		Person person2 = getPerson(email2);
 		
-		Optional<Friendship> friendshipOp = friendshipRepository.findByPersons(person1, person2);
+		Optional<Friendship> friendshipOp = friendshipRepository.findByPerson1AndPerson2(person1, person2);
 		if (!friendshipOp.isPresent()) {
-			Friendship f = new Friendship();
-			f.setPerson1(person1);
-			f.setPerson2(person2);
-			f = friendshipRepository.save(f);
+			Friendship f1 = new Friendship();
+			f1.setPerson1(person1);
+			f1.setPerson2(person2);
+			f1 = friendshipRepository.save(f1);
+
+			Friendship f2 = new Friendship();
+			f2.setPerson1(person2);
+			f2.setPerson2(person1);
+			f2 = friendshipRepository.save(f2);
+
 			result = true;
 		}
 		
