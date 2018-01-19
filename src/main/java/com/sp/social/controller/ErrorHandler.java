@@ -14,6 +14,8 @@ import javassist.NotFoundException;
 public class ErrorHandler {
 	@ExceptionHandler(SPSocialException.class)
 	public ResponseEntity<ResponseData> spException(Exception e) {
+		System.out.println("sp social exception");
+
 		return new ResponseEntity<>(new ResponseData(false, e.getMessage()), HttpStatus.BAD_REQUEST);
 	}
 

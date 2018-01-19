@@ -23,7 +23,7 @@ public class PersonService {
 		Person person = new Person();
 		
 		if (!simpleEmailCheck(email)) {
-			throw new SPSocialException();
+			throw new SPSocialException("Invalid Email");
 		}
 		
 		person.setEmail(email);
@@ -32,19 +32,25 @@ public class PersonService {
 	}
 	
 	private boolean simpleEmailCheck(String email) {
+		System.out.println("checking email");
 		if (email == null || email.length() == 0) {
 			return false;
 		}
+		System.out.println("email not null");
 		
 		int idx1 = email.indexOf('@');
 		if (idx1 < 1) {
 			return false;
 		}
+		System.out.println("@ index " + idx1);
+
 		
 		int idx2 = email.indexOf('.', idx1);
 		if (idx2 - idx1 < 2 || idx2+1 >= email.length()) {
 			return false;
 		}
+		System.out.println(". index" + idx2);
+
 		
 		return true;
 	}
@@ -56,9 +62,7 @@ public class PersonService {
 			System.out.println(email + " exists");
 			person = personOp.get();
 		}else {
-			person = new Person();
-			person.setEmail(email);
-			person = personRepository.save(person);
+			person = create(email);
 			System.out.println(person.getId() + " created");
 		}
 		return person;
