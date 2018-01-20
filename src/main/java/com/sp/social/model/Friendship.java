@@ -19,8 +19,11 @@ public class Friendship {
 
 	@ManyToOne(optional=false)
 	private Person person1;
-
-
+	
 	@ManyToOne
 	private Person person2;
+
+	private boolean followUpdates = false;
+	private boolean blocked = false;
+
 }
