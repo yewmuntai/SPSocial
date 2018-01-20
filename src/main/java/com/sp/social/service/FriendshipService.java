@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.sp.social.exception.SPSocialException;
 import com.sp.social.model.Friendship;
 import com.sp.social.model.Person;
 import com.sp.social.repository.FriendshipRepository;
@@ -18,6 +19,8 @@ public class FriendshipService {
 	private FriendshipRepository friendshipRepository;
 	@Autowired
 	private PersonRepository personRepository;
+	@Autowired
+	private PersonService personService;
 	
 	public List<Friendship> list() {
 		return friendshipRepository.findAll();
@@ -47,5 +50,59 @@ public class FriendshipService {
 			}
 		}
 		return new ArrayList<>();
+	}
+	
+	public boolean subscribe(String requestorEmail, String targetEmail) {
+		if (requestorEmail != null && requestorEmail.length() > 0) {
+			Optional<Person> requestorOp = personRepository.findByEmail(requestorEmail);
+			if (requestorOp.isPresent()) {
+				if (targetEmail != null && targetEmail.length() > 0) {
+					Optional<Person> targetOp = personRepository.findByEmail(targetEmail);
+					if (targetOp.isPresent()) {
+						Optional<Friendship> friendshipOp = friendshipRepository.findByPerson1AndPerson2(requestorOp.get(), targetOp.get());
+						if (friendshipOp.isPresent()) {
+							Friendship fs = friendshipOp.get();
+							fs.setFollowUpdates(true);
+							fs.setBlocked(false);
+							friendshipRepository.save(fs);
+							return true;
+						}
+						throw new SPSocialException("Requestor and target are not friends");
+					}
+				}
+				throw new SPSocialException("Invalid target email");
+			}
+		}
+		throw new SPSocialException("Invalid requestor email");
+	}
+
+	public boolean block(String requestorEmail, String targetEmail) {
+		if (requestorEmail != null && requestorEmail.length() > 0) {
+			Person requestor = personService.getPerson(requestorEmail);
+			if (targetEmail != null && targetEmail.length() > 0) {
+				Person target = personService.getPerson(targetEmail);
+				Optional<Friendship> friendshipOp = friendshipRepository.findByPerson1AndPerson2(requestor, target);
+				if (friendshipOp.isPresent()) {
+					Friendship fs = friendshipOp.get();
+					fs.setFollowUpdates(false);
+					fs.setBlocked(true);
+					friendshipRepository.save(fs);
+
+					Optional<Friendship> friendshipOp2 = friendshipRepository.findByPerson1AndPerson2(target, requestor);
+					if (friendshipOp2.isPresent()) {
+						friendshipRepository.delete(friendshipOp2.get());
+					}
+					return true;
+				}else {
+					Friendship fs = new Friendship();
+					fs.setPerson1(requestor);
+					fs.setPerson2(target);
+					fs.setBlocked(true);
+					friendshipRepository.save(fs);
+				}
+			}
+			throw new SPSocialException("Invalid target email");
+		}
+		throw new SPSocialException("Invalid requestor email");
 	}
 }
