@@ -12,18 +12,13 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
-public class Friendship {
+public class Post {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private long id;
 
 	@ManyToOne(optional=false)
-	private Person person1;
+	private Person poster;
 	
-	@ManyToOne(optional=false)
-	private Person person2;
-
-	private boolean followUpdates = false;
-	private boolean blocked = false;
-
+	private String content;
 }

@@ -19,20 +19,17 @@ import com.sp.social.data.RequestData;
 import com.sp.social.data.ResponseData;
 import com.sp.social.model.Friendship;
 import com.sp.social.service.FriendshipService;
-import com.sp.social.service.PersonService;
 
 @RestController
 @RequestMapping(value="/api/friend")
 public class FriendController {
-	@Autowired
-	private PersonService personService;
 	@Autowired
 	private FriendshipService friendshipService;
 	
 	@PostMapping
 	public ResponseEntity<ResponseData> makeFriend(@RequestBody MakeFriendData data) {
 		String[] emails = data.getFriends();
-		boolean result = personService.makeFriend(emails[0], emails[1]);
+		boolean result = friendshipService.makeFriend(emails[0], emails[1]);
 		
 		return result ? 
 				new ResponseEntity<>(new ResponseData(result), HttpStatus.CREATED) :
