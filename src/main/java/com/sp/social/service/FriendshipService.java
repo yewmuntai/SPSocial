@@ -22,6 +22,14 @@ public class FriendshipService {
 	@Autowired
 	private PersonService personService;
 	
+	void setService(FriendshipRepository fr, PersonRepository pr, PersonService ps) {
+		if (friendshipRepository == null) {
+			friendshipRepository = fr;
+			personRepository = pr;
+			personService = ps;
+		}
+	}
+
 	public List<Friendship> list() {
 		return friendshipRepository.findAll();
 	}

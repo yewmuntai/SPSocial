@@ -15,6 +15,12 @@ public class PersonService {
 	@Autowired
 	private PersonRepository personRepository;
 	
+	void setService(PersonRepository pr) {
+		if (personRepository == null) {
+			personRepository = pr;
+		}
+	}
+	
 	public Person create(String email) {
 		Person person = new Person();
 		
@@ -50,11 +56,9 @@ public class PersonService {
 		Optional<Person> personOp = personRepository.findByEmail(email);
 		Person person = null;
 		if (personOp.isPresent()) {
-			System.out.println(email + " exists");
 			person = personOp.get();
 		}else {
 			person = create(email);
-			System.out.println(person.getId() + " created");
 		}
 		return person;
 	}
